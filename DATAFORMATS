@@ -1,0 +1,21 @@
+== DOGNDS Data Formats ==
+
+  <Commit> objects are the same as used by ccouch.
+
+== URIs ==
+
+  urn:[tree:]{sha1|tiger}:<base32-encoded-hash>
+  
+    The blob having the specified [tree] hash.
+  
+  urn:bitprint:<base32-encoded-sha1>.<base32-encoded-tigertree>
+  
+    The blob having the specified SHA1 and Tiger-tree hashes.
+  
+  x-rdf-subject:<uri>
+
+    Indicates 'the subject described by the resource at <uri>, interpreted as an RDF document'
+
+  x-latest-commit-signed-by:<key uri>
+  
+    The most recent commit object signed using the specified key.
