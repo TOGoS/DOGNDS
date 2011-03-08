@@ -5,8 +5,7 @@ namespace DOGNDS\HL;
 use DOGNDS\Store\ObjeectAccessor;
 
 /**
- * Extends ObjectAccessor with methods to
- * simplify access to persona information. 
+ * High-level methods for creating posts and linking to personas.
  */
 interface PersonaAccessor
 {
