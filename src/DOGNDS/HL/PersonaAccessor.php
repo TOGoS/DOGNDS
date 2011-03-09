@@ -7,7 +7,7 @@ use DOGNDS\Store\ObjeectAccessor;
 /**
  * High-level methods for creating posts and linking to personas.
  */
-interface PersonaAccessor
+interface PersonaAccessor extends Source
 {
 	//// Get stuff
 	

@@ -14,11 +14,7 @@ abstract class AutoStoreTest extends TestCase
 	}
 	
 	public function identify( $obj ) {
-		if( is_scalar($obj) ) {
-			return "urn:sha1:".Base32::encode(mhash(MHASH_SHA1,$obj));
-		} else {
-			return "x-struct:".$this->identify(serialize($obj));
-		}
+		return "urn:sha1:".Base32::encode(mhash(MHASH_SHA1,(string)$obj));
 	}
 	
 	public function stripScheme( $uri ) {
