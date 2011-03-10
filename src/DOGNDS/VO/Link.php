@@ -2,16 +2,21 @@
 
 namespace DOGNDS\VO;
 
+use DOGNDS\VO\MultiMap;
+
 class Link
 {
 	protected $targetUri;
-	protected $metadata;
+	protected $linkMetadata;
+	protected $targetMetadata;
 	
-	public function __construct( $targetUri, $metadata ) {
+	public function __construct( $targetUri, $linkMetadata=array(), $targetMetadata=array() ) {
 		$this->targetUri = $targetUri;
-		$this->metadata = $metadata;
+		$this->linkMetadata = MultiMap::from($linkMetadata);
+		$this->targetMetadata = MultiMap::from($targetMetadata);
 	}
 	
 	public function getTargetUri() {  return $this->targetUri;  }
-	public function getMetadata() {  return $this->metadata;  } 
+	public function getLinkMetadata() {  return $this->linkMetadata;  }
+	public function getTargetMetadata() {  return $this->targetMetadata;  } 
 }

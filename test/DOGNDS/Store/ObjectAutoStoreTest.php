@@ -10,7 +10,6 @@ abstract class ObjectAutoStoreTest extends AutoStoreTest
 		foreach( $this->createStoreableObjects() as $obj ) {
 			$uri = $this->store->store( $obj );
 			$this->assertEquals( $obj, $this->store->get($uri) );
-			echo "Checked $uri\n";
 		}
 	}
 }

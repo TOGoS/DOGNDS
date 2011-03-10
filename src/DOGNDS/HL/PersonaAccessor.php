@@ -2,12 +2,14 @@
 
 namespace DOGNDS\HL;
 
+use DOGNDS\Store\Source;
+use DOGNDS\Store\Flushable;
 use DOGNDS\Store\ObjeectAccessor;
 
 /**
  * High-level methods for creating posts and linking to personas.
  */
-interface PersonaAccessor extends Source
+interface PersonaAccessor extends Source, Flushable
 {
 	//// Get stuff
 	
@@ -42,7 +44,4 @@ interface PersonaAccessor extends Source
 	
 	/** Attach a link to a persona (i.e. this persona 'shares' the link target */
 	public function attachLink( $personaId, $linkUri );
-	
-	/** Call to ensure that changes to the given persona are saved */
-	public function flushChanges( $personaId );
 }

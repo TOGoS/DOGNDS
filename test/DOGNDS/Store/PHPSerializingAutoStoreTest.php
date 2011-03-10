@@ -2,12 +2,15 @@
 
 namespace DOGNDS\Store;
 
+use DOGNDS\Hash\SHA1Identifier;
 use DOGNDS\VO\TextPost;
 
 class PHPSerizalizingAutoStoreTest extends ObjectAutoStoreTest
 {
 	protected function createStore() {
-		return new PHPSerializingAutoStore( new AutoStoreAdapter( array($this,'identify'), new MemStore() ) );
+		return new PHPSerializingAutoStore( new AutoStoreAdapter(
+			SHA1Identifier::getInstance(), new MemStore()
+		) );
 	}
 	
 	protected function createStoreableObjects() {

@@ -13,10 +13,6 @@ abstract class AutoStoreTest extends TestCase
 		$this->store = $this->createStore();
 	}
 	
-	public function identify( $obj ) {
-		return "urn:sha1:".Base32::encode(mhash(MHASH_SHA1,(string)$obj));
-	}
-	
 	public function stripScheme( $uri ) {
 		if( preg_match('/:([^:]+)$/',$uri,$bif) ) {
 			return $bif[1];

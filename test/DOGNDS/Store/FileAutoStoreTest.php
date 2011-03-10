@@ -2,12 +2,14 @@
 
 namespace DOGNDS\Store;
 
+use DOGNDS\Hash\SHA1Identifier;
+
 class FileAutoStoreTest extends AutoStoreTest
 {
 	protected $tempDir;
 	
 	protected function createStore() {
-		return new AutoStoreAdapter( array($this,'identify'),
+		return new AutoStoreAdapter( SHA1Identifier::getInstance(),
 			new FileStore(
 				$this->tempDir,
 				array($this,'translateKeyToFilename')
