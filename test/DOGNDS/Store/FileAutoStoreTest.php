@@ -12,7 +12,8 @@ class FileAutoStoreTest extends AutoStoreTest
 		return new AutoStoreAdapter( SHA1Identifier::getInstance(),
 			new FileStore(
 				$this->tempDir,
-				array($this,'translateKeyToFilename')
+				StandardURNFilenameTranslator::getInstance()
+				// array($this,'translateKeyToFilename')
 			)
 		);
 	}

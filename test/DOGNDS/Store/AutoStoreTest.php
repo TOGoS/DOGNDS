@@ -32,5 +32,6 @@ abstract class AutoStoreTest extends TestCase
 	public function testStoreGetString() {
 		$boogerUri = $this->store->store( "Booger" );
 		$this->assertEquals( "Booger", $this->store->get($boogerUri) );
+		return $boogerUri;
 	}
 }
