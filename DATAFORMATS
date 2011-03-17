@@ -15,7 +15,32 @@
   x-rdf-subject:<uri>
 
     Indicates 'the subject described by the resource at <uri>, interpreted as an RDF document'
+    
+    Philosophical note: When the target is an RDF+XML document, 'subject described by' is
+    pretty clear, whereas you could use x-subject:<arbitrary resource> to reference, say,
+    the subject of an MP3 file, which, is that the song?  Or the subject of the song?  Etc.
+    
+    RDF is particularly useful because we can explicitly define our x-rdf-subject: URIs
+    as referencing the thing described by an RDF document and not have any ambiguities.
+    Even something like JSON would be less suited to this kind of use - are you referencing
+    the data structure described by the JSON, or some abstract concept that that data
+    structure represents?
 
   x-latest-commit-signed-by:<key uri>
   
     The most recent commit object signed using the specified key.
+
+== High-level object model ==
+
+* Commits point to previous commits and to a 'target' (just like ccouch)
+* A Person can 'share' a bunch of things.
+* The things can have metadata associated with them by the sharer, such as tags and descriptions.
+* The things may not have been created by the person, and in those cases SHOULD have metadata indicating
+  their source (though we can't enforce this in the data).
+* When the things being shared are defined by RDF describing them, that RDF can also provide metadata.
+
+TODO: Update the PersonAccessor interface and remove or change the notion of 'links';
+I'm thinking now that people won't share links, but they can share arbitrary resources
+while associating metadata (which can be done at the RDF layer without separate 'link'
+objects, though it may still be useful to have similar objects in the API to separate
+provided-by-user metadata and provided-by-resource [meta]data). 
