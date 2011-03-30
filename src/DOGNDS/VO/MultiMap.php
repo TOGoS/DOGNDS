@@ -43,7 +43,11 @@ class MultiMap implements ArrayAccess
 		$this->data[$k] = array($v);
 	}
 	
-	public function putAll( $k, array $v ) {
+	/**
+	 * @param string $k attribute name
+	 * @param mixed $v an array of values OR an object that somehow represents the set of all values
+	 */
+	public function putAll( $k, $v ) {
 		$this->data[$k] = $v;
 	}
 	

@@ -36,12 +36,12 @@ interface PersonaAccessor extends Source, Flushable
 	
 	//// Modify stuff
 	
-	/** Returns a URI identifying the post object */
+	/** Returns a post object or a Ref targetting one */
 	public function createPost( $subject, $content, $metadata=array() );
 	
-	/** Returns a URI identifying the link object */
-	public function createLink( $postUri, $metadata=array() );
+	/** Returns a link object */
+	public function createLink( $post, $metadata=array() );
 	
-	/** Attach a link to a persona (i.e. this persona 'shares' the link target */
-	public function attachLink( $personaId, $linkUri );
+	/** Attach a link to a persona (i.e. this persona 'shares' the link target) */
+	public function attachLink( $personaId, $link );
 }

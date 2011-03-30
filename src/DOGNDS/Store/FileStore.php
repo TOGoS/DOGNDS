@@ -10,7 +10,7 @@ class FileStore implements Source, Store
 	protected $dir;
 	protected $keyTranslator;
 	
-	public function __construct( $dir, $keyTranslator ) {
+	public function __construct( $dir, $keyTranslator=null ) {
 		$this->dir = $dir;
 		$this->keyTranslator = $keyTranslator;
 	}
@@ -19,11 +19,21 @@ class FileStore implements Source, Store
 		if( preg_match('#(^|\/|\\\\)\.\.($|\/|\\\\)|^\/|^\\\\|[a-zA-Z]\:[\/\\\\]#',$path) ) {
 			throw new Exception("Path component contains unsafe sequences: ".$path);
 		}
+		// TODO: Unit test this, make sure nothing dangerous gets though.
+		// Should probably limit length, etc.
 		return $path;
 	}
 	
+	protected function translateKey( $key ) {
+		if( $this->keyTranslator !== null ) {
+			return call_user_func($this->keyTranslator, $key );
+		} else {
+			return $key;
+		}
+	}
+	
 	protected function keyToPath( $key ) {
-		return $this->dir . '/' . $this->validate( call_user_func($this->keyTranslator, $key ) );
+		return $this->dir . '/' . $this->validate( $this->translateKey($key) );
 	}
 	
 	public function precache( $uris ) {}

@@ -44,3 +44,20 @@ I'm thinking now that people won't share links, but they can share arbitrary res
 while associating metadata (which can be done at the RDF layer without separate 'link'
 objects, though it may still be useful to have similar objects in the API to separate
 provided-by-user metadata and provided-by-resource [meta]data). 
+
+== Low-level object model ==
+
+Conceptually, all object can be described using RDF.  For space and speed reasons
+we'll use a custom RDF storage format.
+
+Object = {
+	$class
+	$attributes = [
+		$name => AttributeList
+	]
+}
+
+AttributeList can be a simple list of values for an attribute, or a reference to a
+data structure (which is itself encoded as RDF) that describes the list.  Conceptually,
+the valies of the attribute are the items that the list references, and have
+nothing to do with the objects that back the list itself.

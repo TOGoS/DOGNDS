@@ -2,6 +2,8 @@
 
 namespace DOGNDS\Store;
 
+use Exception;
+
 class StandardURNFilenameTranslator
 {
 	protected static $instance;

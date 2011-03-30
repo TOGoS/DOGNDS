@@ -38,7 +38,9 @@ class CrappyPersonaAccessor implements PersonaAccessor
 	}
 	
 	protected function getPersonaProfile( $personaId ) {
-		return $this->storage->get( $this->getPersonaProfileUri($personaId) );
+		$profileUri = $this->getPersonaProfileUri($personaId);
+		if( $profileUri === null ) return null;
+		return $this->storage->get( $profileUri );
 	}
 	
 	public function getLinksByTag( $personaIds, $tags ) {
