@@ -12,7 +12,7 @@
   
     The blob having the specified SHA1 and Tiger-tree hashes.
   
-  x-rdf-subject:<uri>
+  x-[rdf-]subject:<uri>
 
     Indicates 'the subject described by the resource at <uri>, interpreted as an RDF document'
     
@@ -26,10 +26,86 @@
     the data structure described by the JSON, or some abstract concept that that data
     structure represents?
 
-  x-latest-commit-signed-by:<key uri>
+  active:<function URI>+<argName>@<arg value URI>...
   
-    The most recent commit object signed using the specified key.
+    Used to represent more complex queries
 
+Active functions:
+
+  - Note: the namespace of argument names / attributes is http://ns.nuke24.net/DOGNDS/  
+
+  http://ns.nuke24.net/DOGNDS/Set
+    item@<item>
+    
+    - may have any number of items
+    
+  http://ns.nuke24.net/DOGNDS/SignatureInfo
+    target@<data to be signed>
+    signatureAlgorithm@<name of method, i.e. "sha1WithRSAEncryption">
+    publicKey@<public key of signer>
+    signature@<signature>
+    
+    - holds information about the signing of some data.
+    - there may be multiple publicKeys and signatures
+    - when the object is used as an expression, it returns itself  
+  
+  http://ns.nuke24.net/DOGNDS/Subject
+    operand@<data representing object>
+    
+    - equivalent to x-subject:<target URI>
+    - Returns the object described by the specified data
+  
+  http://ns.nuke24.net/DOGNDS/TreeHash
+    algorithm@<name of algorithm, e.g. "SHA-1", "Tiger">
+    output@<hash output as an unencoded string> 
+    blockSize@<number of bytes per block, if consistent, e.g. 1024>
+    branchCount@<number of branches per node, if consistent, e.g. 2>
+    nodePrefix@<byte squence prefixing a block that consists of hash references to child nodes, default "1">
+    dataPrefix@<byte squence prefixing a block of data (i.e. 'leaf'), default "0">
+    depth@<number of 'rows' in tree, if consistent, including that of the leaf nodes and the root node> 
+    
+    - internal nodes are serialized as nodePrefix + childHash1 + childHash2 + ...
+    - leaf nodes are serialized as dataPrefix + data
+    - output is the hash of the root internal node
+    - if depth, blockSize, or branchCount are unspecified, the tree is assumed to be 'free form';
+      this has the implication that the hash is non-canonical and internal nodes must be available
+      in order to verify the hash.
+    
+    - See: http://web.archive.org/web/20080316033726/http://www.open-content.net/specs/draft-jchapweske-thex-02.html
+  
+  http://ns.nuke24.net/DOGNDS/Hash
+    algorithm@<name of algorithm, e.g. "SHA-1", "Tiger">
+    output@<hash output as an unencoded (i.e. 'binary') string> 
+  
+  http://ns.nuke24.net/DOGNDS/HashedData
+    hash@<object representing hash scheme and output>
+    requiredHash@<object representing hash scheme and output that MUST be verified>
+    size@<length of hashed data, in bytes>  
+    
+    - May specify any number of hashes and requiredHashes
+    - Any one of the specified hashes can be by itself used to verify data unless
+      requiredHashes are specified, in which case at least all requiredHashes will be used.
+    - dataSize is optional, but if specified, resulting data must be verified to actually be this length
+    - Returns the hashed data if data is found and hashes verify; otherwise
+      results in a not found error
+  
+  http://ns.nuke24.net/DOGNDS/SignedData
+    operand@<signed data structure>
+    trustedPublicKeys@<set of public keys, subset of which the data must be signed by>
+    requiredSignatureCount@<require signatures by this many keys, default = 1>
+    
+    - will return the signed data or result in a security error if
+      signatures could not be verified
+  
+  http://ns.nuke24.net/DOGNDS/LatestSignedCommit
+    tag@<commit must have this tag>
+    trustedPublicKeys@<set of public keys, subset of which the commit must be signed by>
+    requiredSignatureCount@<require signatures by this many keys, default = 1>
+    
+    - will return the latest commit signed by at least requiredSignatureCount of the listed keys
+      with the specified tag.
+    - Will result in a not found error if no commit is found
+  
 == High-level object model ==
 
 * Commits point to previous commits and to a 'target' (just like ccouch)
