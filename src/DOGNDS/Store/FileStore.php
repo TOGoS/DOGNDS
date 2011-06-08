@@ -38,7 +38,7 @@ class FileStore implements Source, Store
 	
 	public function precache( $uris ) {}
 	
-	public function get( $key, $force=true ) {
+	public function get( $key, $noWait=false ) {
 		$fn = $this->keyToPath($key);
 		if( file_exists($fn) ) {
 			return file_get_contents($fn);

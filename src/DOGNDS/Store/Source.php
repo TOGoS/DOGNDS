@@ -12,8 +12,8 @@ interface Source
 	
 	/**
 	 * Fetches and returns the object identified by $uri
-	 * @param boolean $force - if false, may not return the object if it is not
-	 *   cached locally
+	 * @param boolean $noWait - if true, will return null instead of waiting
+	 *   for 'slow' operations to complete.
 	 */
-	public function get( $uri, $force=true );
+	public function get( $uri, $noWait=false );
 }

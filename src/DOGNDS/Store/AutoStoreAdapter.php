@@ -16,8 +16,8 @@ class AutoStoreAdapter implements AutoStore, Source
 		$this->store->precache( $keys );
 	}
 	
-	public function get( $key, $force=true ) {
-		return $this->store->get( $key, $force );
+	public function get( $key, $noWait=false ) {
+		return $this->store->get( $key, $noWait );
 	}
 	
 	public function store( $object ) {

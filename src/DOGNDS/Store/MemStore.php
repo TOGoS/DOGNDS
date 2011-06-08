@@ -8,7 +8,7 @@ class MemStore implements Source, Store
 	
 	public function precache( $uris ) {}
 	
-	public function get( $key, $force=true ) {
+	public function get( $key, $noWait=false ) {
 		return @$this->store[$key];
 	}
 	

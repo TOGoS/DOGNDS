@@ -25,8 +25,8 @@ class CrappyPersonaAccessor implements PersonaAccessor
 		$this->storage->precache($uris);
 	}
 	
-	public function get( $uri, $force=true ) {
-		return $this->storage->get($uri,$force);
+	public function get( $uri, $noWait=false ) {
+		return $this->storage->get($uri,$noWait);
 	}
 	
 	public function getPersonaId( $nickname ) {

@@ -30,12 +30,12 @@ abstract class SerializingAutoStore implements Source, AutoStore
 		}
 	}
 	
-	public function get( $uri, $force=true ) {
+	public function get( $uri, $noWait=false ) {
 		$wrappedUri = $this->unwrapUri($uri);
 		if( $wrappedUri === null ) {
 			return $this->next->get( $uri );
 		} else {
-			$data = $this->next->get( $wrappedUri, $force );
+			$data = $this->next->get( $wrappedUri, $noWait );
 			if( $data === null ) return null;
 			return $this->unserialize( $data );
 		}
