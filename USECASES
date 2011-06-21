@@ -1,0 +1,20 @@
+== Syndication ==
+
+Publisher creates data, creates commit, signs commit, pushes all new data to servers.
+
+Consumer queries servers for latest commit with a given name signed by publisher,
+downloads new data.
+
+
+== forum ==
+
+Users may submit messages to a forum.  Each message is signed by the user and
+references whatever messages it is a response to.
+
+The forum aggregates these messages and publishes an index, signed by the forum
+manager.
+
+Users download the index (using 'get last commit named <forum name> by
+<forum manager>' method) and can verify the messages.
+
+
