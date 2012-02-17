@@ -2,7 +2,7 @@
 
 Publisher creates data, creates commit, signs commit, pushes all new data to servers.
 
-Consumer queries servers for latest commit with a given name signed by publisher,
+Consumer queries servers for latest commit with a given tag signed by publisher,
 downloads new data.
 
 
@@ -17,4 +17,27 @@ manager.
 Users download the index (using 'get last commit named <forum name> by
 <forum manager>' method) and can verify the messages.
 
+Alternatively, users could download the messages themselves, possibly
+using the forum's filters.
+
+
+
+== real-time messaging ==
+
+Post message objects directly to your friends' server.
+
+
+== mail ==
+
+Post messages with tagged with the destination mailbox ID.
+
+
+== private mail ==
+
+Post messages with tagged with the destination mailbox ID, referencing encrypted content.
+
+
+== multi-target mail ==
+
+== real-time private messaging ==
 
