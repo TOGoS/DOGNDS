@@ -1,9 +1,36 @@
 == DOGNDS Data Formats ==
 
   <Commit> objects are the same as used by ccouch.
+  
+== Authentication ==
+
+  Most objects do not contain authentication information.  Instead,
+  documents describing user activity are signed by the user and the
+  signature is stored separate from the primary data.  This simplifies
+  the object model somewhat, but since the signed data and the signature
+  rely on each other, they should generally be transferred together
+  for efficiency.  One method of doing this is to use 'out-of-band'
+  channels (such as HTTP headers) to pass signatures along with data.
+  The simplest standard I've found for doing this over HTTP uses
+  a 'Content-Signature' header, and is described here:
+  http://tools.ietf.org/html/draft-burke-content-signature-00
+  
+  We could use a subset of this standard as follows:
+  - Only the content will be signed
+  - Signer = URN of the signer's public key
+  - Algorithm = SHA1withRSA
+  
+  For example:
+  Content-Signature:
+    signature=1234567890...;
+    algorithm=SHA1withRSA;
+    signer=urn:sha1:BLAHBLAHBLAH;
 
 == URIs ==
-
+  
+  All the following URI schemes are 'shorthand' for expressions
+  that can also be represented using active: URIs (see next section)
+  
   urn:[tree:]{sha1|tiger}:<base32-encoded-hash>
   
     The blob having the specified [tree] hash.
@@ -11,6 +38,10 @@
   urn:bitprint:<base32-encoded-sha1>.<base32-encoded-tigertree>
   
     The blob having the specified SHA1 and Tiger-tree hashes.
+  
+  <URI of RDF document>#
+  
+    Primary subject of the named RDF document.  Equivalent to x-rdf-subject:<URI of document>.
   
   x-[rdf-]subject:<uri>
 
@@ -31,9 +62,10 @@
     Used to represent more complex queries
 
 == Active functions ==
-
-  - Note: the namespace of argument names / attributes is http://ns.nuke24.net/DOGNDS/  
-
+  
+  For use in active: URIs or other expression syntaxes that follow the same model.
+  The namespace of argument names / attributes is http://ns.nuke24.net/DOGNDS/  
+  
   http://ns.nuke24.net/DOGNDS/Set
     item@<item>
     
@@ -85,7 +117,7 @@
     - May specify any number of hashes and requiredHashes
     - Any one of the specified hashes can be by itself used to verify data unless
       requiredHashes are specified, in which case at least all requiredHashes will be used.
-    - dataSize is optional, but if specified, resulting data must be verified to actually be this length
+    - size is optional, but if specified, resulting data must be verified to actually be this length
     - Returns the hashed data if data is found and hashes verify; otherwise
       results in a not found error
   
@@ -105,35 +137,3 @@
     - will return the latest commit signed by at least requiredSignatureCount of the listed keys
       with the specified tag.
     - Will result in a not found error if no commit is found
-  
-== High-level object model ==
-
-* Commits point to previous commits and to a 'target' (just like ccouch)
-* A Person can 'share' a bunch of things.
-* The things can have metadata associated with them by the sharer, such as tags and descriptions.
-* The things may not have been created by the person, and in those cases SHOULD have metadata indicating
-  their source (though we can't enforce this in the data).
-* When the things being shared are defined by RDF describing them, that RDF can also provide metadata.
-
-TODO: Update the PersonAccessor interface and remove or change the notion of 'links';
-I'm thinking now that people won't share links, but they can share arbitrary resources
-while associating metadata (which can be done at the RDF layer without separate 'link'
-objects, though it may still be useful to have similar objects in the API to separate
-provided-by-user metadata and provided-by-resource [meta]data). 
-
-== Low-level object model ==
-
-Conceptually, all object can be described using RDF.  For space and speed reasons
-we'll use a custom RDF storage format.
-
-Object = {
-	$class
-	$attributes = [
-		$name => AttributeList
-	]
-}
-
-AttributeList can be a simple list of values for an attribute, or a reference to a
-data structure (which is itself encoded as RDF) that describes the list.  Conceptually,
-the valies of the attribute are the items that the list references, and have
-nothing to do with the objects that back the list itself.

@@ -1,0 +1,16 @@
+== High-level object model ==
+
+* Commits point to previous commits ('parent') and to a 'target' (just like ccouch)
+* A Person can 'share' a bunch of things.
+* The things can have metadata associated with them by the sharer, such as tags and descriptions.
+* The things may not have been created by the person, and in those cases SHOULD have metadata indicating
+  their source (though we can't enforce this in the data).
+* When the things being shared are defined by RDF describing them, that RDF can also provide metadata.
+
+<Commit xmlns="http://ns.nuke24.net/ContentCouch">
+	<tag>profile</tag>
+	<parent rdf:resource="x-rdf-subject:urn:bitprint:......."/> <!-- Reference to previous commit -->
+	<target rdf:resource="x-rdf-subject:urn:bitprint:......."/> <!-- Reference to person object -->
+</Commit>
+
+<Person

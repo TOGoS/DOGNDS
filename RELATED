@@ -1,0 +1,4 @@
+http://www.w3.org/wiki/Foaf%2Bssl
+- describes using SSL to authenticate people.  It seems a bit more complex
+  than the DOGNDS method, relying on certificates and multiple other
+  standards.
