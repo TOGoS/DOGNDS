@@ -233,12 +233,21 @@
     
     - will return the signed data or result in a security error if
       signatures could not be verified
+    
+    backseat driver implementation note: Since hashed data will always be
+    a byte sequence, you can return something that is not a byte seqence
+    (such as null) to incate 'not found' instead of 'throwing an error'
+    (whatever that means in your implementation language/framework).
   
   http://ns.nuke24.net/DOGNDS/LatestTaggedSignedCommit
     tag@<commit must have this tag>
-    trustedPublicKeys@<set of public keys, subset of which the commit must be signed by>
+    publicKey@<public key that may have signed the data>
     requiredSignatureCount@<require signatures by this many keys, default = 1>
     
-    - will return the latest commit signed by at least requiredSignatureCount of the listed keys
+    - Will return the latest commit signed by at least requiredSignatureCount of the listed keys
       with the specified tag.
     - Will result in a not found error if no commit is found
+    - Providing multiple public keys and > 1 requiredSignatureCount is
+      sort of an advanced feature.  I don't plan to support it, but
+      the idea could be useful in the future so I figured I'd specify
+      how it should work.
