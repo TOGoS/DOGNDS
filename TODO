@@ -1,11 +1,16 @@
+Write document with examples of some data and HTTP Content-Signature encoding.
+
 Define multiple 'levels' of implementation and the technology required for each.
 
 e.g.
-  Level 000: a web site that can respond to http://.../N2R?<name> or
-             http://.../<urn>/<name> requests for sha1/bitprint URNs
-  Level 100: web site accepts data via POST
-  Level 200: Site stores and verifies singature info passed via
-             Content-Signature: headers and passes them back
-             with related objects. 
-  Level 300: Site indexes commits by tag and signer and can interpret
-             active: URNs to query based on this.
+
+  Level 1: a web site that can respond to http://.../N2R?<name> or
+           http://.../<urn>/<name> requests for sha1/bitprint URNs
+  Level 2: web site accepts data via POST
+  Level 3: Site stores and verifies singature info passed via
+           Content-Signature: headers and passes them back
+           with related objects. 
+  Level 3: Site indexes commits by tag and signer and can interpret
+           active: URNs to query based on this.
+
+Could use 1.01, etc. as labels for updated level specs.
