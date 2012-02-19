@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <?xml version="1.0" encoding="UTF-8" ?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -158,15 +159,15 @@ represented with either active: URIs or with RDF+XML.  For instance,
 an expression that adds some numbers (2 + (3 * 8), let's say) might be
 encoded in RDF+XML as:</p>
 
-<blockquote><pre><code><![CDATA[<Add xmlns="http://example.org/arithmetic/">
-    <term>2</term>
-    <term>
-        <Multiply>
-            <factor>3</factor>
-            <factor>8</factor>
-        </Multiply>
-    </term>
-</Add>]]></code></pre></blockquote>
+<blockquote><pre><code>&lt;Add xmlns="http://example.org/arithmetic/"&gt;
+    &lt;term&gt;2&lt;/term&gt;
+    &lt;term&gt;
+        &lt;Multiply&gt;
+            &lt;factor&gt;3&lt;/factor&gt;
+            &lt;factor&gt;8&lt;/factor&gt;
+        &lt;/Multiply&gt;
+    &lt;/term&gt;
+&lt;/Add&gt;</code></pre></blockquote>
   
 <p>And as an active: URI:</p>
 
@@ -196,31 +197,31 @@ object is actually an expression that returns the value of the
 attribute.  For instance, we might have defined a Bookcase class that
 can be used like so:</p>
 
-<blockquote><pre><code><![CDATA[<Bookcase xmlns="http://ns.furniture.com/">
-    <width xml:unit="inches">28</width>
-    <height xml:unit="inches">96</height>
-</Bookcase>]]></code></pre></blockquote>
+<blockquote><pre><code>&lt;Bookcase xmlns="http://ns.furniture.com/"&gt;
+    &lt;width xml:unit="inches"&gt;28&lt;/width&gt;
+    &lt;height xml:unit="inches"&gt;96&lt;/height&gt;
+&lt;/Bookcase&gt;</code></pre></blockquote>
   
 <p>When 'Bookcase' is used as part of an expression, it acts as a
 constructor for bookcase objects, and width and height will be
 evaluated as expressions.  Following is an expression that evaluates
 to a Bookcase object with twice the height of another bookcase.</p>
 
-<blockquote><pre><code><![CDATA[<Bookcase xmlns="http://ns.furniture.com/">
-    <width xml:unit="inches">28</width> <!-- Literal? -->
-    <height>
-        <Multiply xmlns="ns.example.org/arithmetic/">
-            <factor>3</factor>
-            <Height>
-                <item>
-                    <Literal xmlns="http://ns.nuke24.net/NET/">
-                        <value rdf:resource="x-rdf-subject:http://items.furniture.com/SmallBookcase.rdf"/>
-                    </Literal>
-                </item>
-            </Height>
-        </Multiply>
-    </height>
-</Bookcase>]]></code></pre></blockquote>
+<blockquote><pre><code>&lt;Bookcase xmlns="http://ns.furniture.com/"&gt;
+    &lt;width xml:unit="inches"&gt;28&lt;/width&gt; &lt;!-- Literal? --&gt;
+    &lt;height&gt;
+        &lt;Multiply xmlns="ns.example.org/arithmetic/"&gt;
+            &lt;factor&gt;3&lt;/factor&gt;
+            &lt;Height&gt;
+                &lt;item&gt;
+                    &lt;Literal xmlns="http://ns.nuke24.net/NET/"&gt;
+                        &lt;value rdf:resource="x-rdf-subject:http://items.furniture.com/SmallBookcase.rdf"/&gt;
+                    &lt;/Literal&gt;
+                &lt;/item&gt;
+            &lt;/Height&gt;
+        &lt;/Multiply&gt;
+    &lt;/height&gt;
+&lt;/Bookcase&gt;</code></pre></blockquote>
 
 <aside>  
 <h5>Note about function / literal / constructor ambiguity</h5>
@@ -309,7 +310,7 @@ programs that work with these objects.</p>
 <dt>http://ns.nuke24.net/DOG/Func/RDFSubject</dt>
 <dd>
 <ul class="functionArguments">
-<li>document@&lt;data representing object&gt;
+<li>document@&lt;data representing object&gt;</li>
 </ul>
 
 <ul class="functionNotes">
@@ -391,6 +392,7 @@ programs that work with these objects.</p>
   idea could be useful in the future so I figured I'd specify how it
   should work.</li>
 </ul>
+</dd>
 
 
 <dt>http://ns.nuke24.net/DOG/Func/SignedData</dt>
