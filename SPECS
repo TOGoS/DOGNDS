@@ -61,10 +61,112 @@
   
     Used to represent more complex queries
 
-== Active functions ==
+== Namespaced Expression Trees ==
+
+  A way to model program expressions that happens to be easily represented
+  with either active: URIs or with RDF+XML.  For instance, an expression that
+  adds some numbers (2 + (3 * 8), let's say) might be encoded in RDF+XML as:
   
-  For use in active: URIs or other expression syntaxes that follow the same model.
-  The namespace of argument names / attributes is http://ns.nuke24.net/DOGNDS/  
+    <Add xmlns="http://example.org/arithmetic/">
+        <term>2</term>
+        <term>
+            <Multiply>
+                <factor>3</factor>
+                <factor>8</factor>
+            </Multiply>
+        </term>
+    </Add>
+  
+  And as an active: URI:
+  
+    active:http://example.org/arithmetic/Add+term@2+term@active%3Ahttp%3A%2F%2Fexample%2Eorg%2Farithmetic%2FMultiply%2Bfactor%403%2Bfactor%408
+  
+  Neither of which is especially friendly to human eyes or well-suited to
+  effieciently encode simple arithmetic expressions, but they can be used
+  as an interchange format when a functional program needs to be explicitly
+  described.
+  
+  Active URI syntax note:
+  In the active: URI example above, expression attributes are assumed to
+  inherit the namespace of the expression type name (the active: URI spec
+  says that names may be relative, but doesn't specify relative to /what/.
+  This seems a reasonable way to use relative URIs).
+  
+  Philosophical note:
+  A convention for expressions that evaluate to complex objects is to think
+  of RDF-described objects as behaving as themselves when interpreted in a
+  non-espression context, and as constructors when interpreted in an
+  expression context, where each attribute of the object is actually an
+  expression that returns the value of the attribute.  For instance, we might
+  have defined a Bookcase class that can be used like so:
+  
+    <Bookcase xmlns="http://ns.furniture.com/">
+        <width xml:unit="inches">28</width>
+        <height xml:unit="inches">96</height>
+    </Bookcase>
+  
+  When 'Bookcase' is used as part of an expression, it acts as a constructor
+  for bookcase objects, and width and height will be evaluated as expressions.
+  Following is an expression that evaluates to a Bookcase object with twice
+  the height of another bookcase.
+  
+    <Bookcase xmlns="http://ns.furniture.com/">
+        <width xml:unit="inches">28</width> <!-- Literal? -->
+        <height>
+            <Multiply xmlns="ns.example.org/arithmetic/">
+                <factor>3</factor>
+                <Height>
+                    <item>
+                        <Literal xmlns="http://ns.nuke24.net/NET/">
+                            <value rdf:resource="x-rdf-subject:http://items.furniture.com/SmallBookcase.rdf"/>
+                        </Literal>
+                    </item>
+                </Height>
+            </Multiply>
+        </height>
+    </Bookcase>
+  
+  Note about parsing expressions: In the above example I assumed that the
+  value given for 'width' is identified by the expression compiler as
+  a literal value.  It makes sense for string literals to be interpreted
+  this way, but I'm not sure how clever we should allow compilers to be
+  about determining whether or not objects represent literal values, since
+  classes not explicitly defined as expressions could also be treated as
+  constructors which in turn have their attributes evaluated, or they
+  could cause an error to prevent typos in class names from quietly
+  altering program behavior because the author meant to type <Multiply>
+  but instead typed <Mulitply> and is now getting a Mulitply object as the
+  result of his program instead of a number!
+  
+  It is probably best to require all expression types to be explicitly
+  declared, even for constructors, and have a very simple rule for literal
+  values (e.g. limit it to string literals).
+  
+  Note about RDF resource URLs:
+  More conventional RDF+XML use would probably have the small bookcase
+  in the above example referenced using a URL like...
+  http://items.furniture.com/Bookcases.rdf#SmallBookcase,
+  where #SmallBookcase means 'the thing described by the node labeled
+  SmallBookcase in this file'.  That seems to be the convention for
+  interpreting #s suggested by RDF documents, anyway.  Extrapolating,
+  you might say that a # at the end of a URL means the thing described
+  by the entire RDF document, making the # postfix and x-rdf-subject:
+  prefix interchangeable.
+
+== Functions ==
+  
+  The namespace for all argument names / attributes of the following functions
+  is http://ns.nuke24.net/DOGNDS/.  They are left off for brevity, and because
+  my interpretation of the active URI scheme suggests that they can be left
+  out of active URIs.
+  
+  Note: I try to be careful when using nouns as function names.  For example,
+  I use SignatureInfo and HashInfo instead of simply 'Signature' and 'Hash'
+  to name both the constructors and the types of the objects they return,
+  since 'signature' and 'hash' more intuitively mean the output of the signing
+  and hash function (each of which is a random-looking byte sequence, not
+  a structure describing how it was created).  I suggest using this same
+  convention to name classes in programs that work with these objects.
   
   http://ns.nuke24.net/DOGNDS/Set
     item@<item>
@@ -77,15 +179,16 @@
     publicKey@<public key of signer>
     signature@<signature>
     
-    - holds information about the signing of some data.
+    - constructor for an object containing information
+      about the signing of some data.
     - there may be multiple publicKeys and signatures
-    - when the object is used as an expression, it returns itself  
   
-  http://ns.nuke24.net/DOGNDS/Subject
+  http://ns.nuke24.net/DOGNDS/RDFSubject
     operand@<data representing object>
     
-    - equivalent to x-subject:<target URI>
-    - Returns the object described by the specified data
+    - equivalent to x-rdf-subject:<target URI>
+    - Returns some (hopefully useful) representation of the
+      object described by the specified data.
   
   http://ns.nuke24.net/DOGNDS/TreeHash
     algorithm@<name of algorithm, e.g. "SHA-1", "Tiger">
@@ -105,21 +208,23 @@
     
     - See: http://web.archive.org/web/20080316033726/http://www.open-content.net/specs/draft-jchapweske-thex-02.html
   
-  http://ns.nuke24.net/DOGNDS/Hash
+  http://ns.nuke24.net/DOGNDS/HashInfo
     algorithm@<name of algorithm, e.g. "SHA-1", "Tiger">
-    output@<hash output as an unencoded (i.e. 'binary') string> 
+    output@<hash output as an unencoded (i.e. 'binary') string>
+    
+    - constructor for an object holding information about a hash
   
   http://ns.nuke24.net/DOGNDS/HashedData
     hash@<object representing hash scheme and output>
     requiredHash@<object representing hash scheme and output that MUST be verified>
     size@<length of hashed data, in bytes>  
     
+    - Returns the hashed data if data is found and hashes verify; otherwise
+      results in a not found error
     - May specify any number of hashes and requiredHashes
     - Any one of the specified hashes can be by itself used to verify data unless
       requiredHashes are specified, in which case at least all requiredHashes will be used.
     - size is optional, but if specified, resulting data must be verified to actually be this length
-    - Returns the hashed data if data is found and hashes verify; otherwise
-      results in a not found error
   
   http://ns.nuke24.net/DOGNDS/SignedData
     operand@<signed data structure>
@@ -129,7 +234,7 @@
     - will return the signed data or result in a security error if
       signatures could not be verified
   
-  http://ns.nuke24.net/DOGNDS/LatestSignedCommit
+  http://ns.nuke24.net/DOGNDS/LatestTaggedSignedCommit
     tag@<commit must have this tag>
     trustedPublicKeys@<set of public keys, subset of which the commit must be signed by>
     requiredSignatureCount@<require signatures by this many keys, default = 1>
