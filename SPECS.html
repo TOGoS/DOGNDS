@@ -112,7 +112,7 @@ tag (updateable by the person in possession of the corresponding
 private key).</p>
   
 <p>All the following URI schemes are 'shorthand' for expressions that
-can also be represented using active: URIs (see next section).</p>
+can also be represented using Active URIs (see next section).</p>
 
 <dl>
 <dt><code>urn:[tree:]{sha1|tiger}:&lt;base32-encoded-hash&gt;</code></dt>
@@ -155,7 +155,7 @@ the meaning of the above URI schemes.  See: <a href="http://en.wikipedia.org/wik
 <h2 id="NET">Namespaced Expression Trees</h2>
 
 <p>A way to model program expressions that happens to be easily
-represented with either active: URIs or with RDF+XML.  For instance,
+represented with either Active URIs or with RDF+XML.  For instance,
 an expression that adds some numbers (2 + (3 * 8), let's say) might be
 encoded in RDF+XML as:</p>
 
@@ -169,9 +169,9 @@ encoded in RDF+XML as:</p>
     &lt;/term&gt;
 &lt;/Add&gt;</code></pre></blockquote>
   
-<p>And as an active: URI:</p>
+<p>And as an Active URI:</p>
 
-<blockquote><pre><code>active:http://example.org/arithmetic/Add+term@2+term@active%3Ahttp%3A%2F%2Fexample%2Eorg%2Farithmetic%2FMultiply%2Bfactor%403%2Bfactor%408</code></pre></blockquote>
+<blockquote><pre><code>active:http://example.org/arithmetic/Add+term@data:,2+term@active%3Ahttp%3A%2F%2Fexample%2Eorg%2Farithmetic%2FMultiply%2Bfactor%40data:,3%2Bfactor%40data:,8</code></pre></blockquote>
   
 <p>Neither of which is especially friendly to human eyes or
 well-suited to effieciently encode simple arithmetic expressions, but
@@ -244,15 +244,16 @@ rule for literal values (e.g. limit it to string literals).</p>
 
 <aside>
 <h5>Note about RDF resource URLs</h5>
-<p>More conventional RDF+XML use would
-probably have the small bookcase in the above example referenced using
-a URL like...  http://items.furniture.com/Bookcases.rdf#SmallBookcase,
-where #SmallBookcase means 'the thing described by the node labeled
-SmallBookcase in this file'.  That seems to be the convention for
-interpreting #s suggested by RDF documents, anyway.  Extrapolating,
-you might say that a # at the end of a URL means the thing described
-by the entire RDF document, making the # postfix and x-rdf-subject:
-prefix interchangeable.</p>
+<p>More conventional RDF+XML use would probably have the small
+bookcase in the above example referenced using a URL like...
+<code>http://items.furniture.com/Bookcases.rdf#SmallBookcase</code>,
+where <code>#SmallBookcase</code> means 'the thing described by the
+node labeled SmallBookcase in this file'.  That seems to be the
+convention for interpreting <code>#</code>s suggested by RDF
+documents, anyway.  Extrapolating, you might say that a <code>#</code>
+at the end of a URL means the thing described by the entire RDF
+document, making the <code>#</code> postfix
+and <code>x-rdf-subject:</code> prefix interchangeable.</p>
 </aside>
 </aside>
 </section>
