@@ -64,10 +64,33 @@
 <section>
 <h2 id="GraphObjects">Graph Objects</h2>
 
-<p>Objects are encoded as RDF+XML and stored in the network.</p>
+<p>Objects are encoded as RDF+XML and stored in the network.  There
+are various classes of objects for representing different things:</p>
 
-<p class="todo">TODO: document object types and encodings (Commits,
-Persons, Posts, Pictures, Comments, etc).</p>
+<ul>
+<li>Commits link to previous commits, hold tags, and link to target
+objects.  They serve the same purpose as commit objects in distributed
+version control systems.  They use a vocabulary from ContentCouch, one
+of my previous projects.</li>
+<li>Person objects contain all information a person wants to publish
+about themselves, including references to friends' profiles and
+objects they want to 'share' such as links to blog posts or pictures of
+cats.  These will probably use some FOAF-based vocabulary.</li>
+</ul>
+
+<p>An example commit (the referenced URIs are made up):</p>
+
+<blockquote><pre><code>&lt;Commit xmlns="http://ns.nuke24.net/ContentCouch/" xmlns:dc="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"&gt;
+    &lt;tag&gt;profile&lt;/tag&gt;
+    &lt;target rdf:resource="x-rdf-subject:urn:bitprint:2A4FWNMNJSBBENGYASUH4WQTAWGN5TAW.EAS6OYSBPQNYRUZK6MHLLOPCIGQXEZEJQIQSSXI"/&gt;
+    &lt;parent rdf:resource="x-rdf-subject:urn:bitprint:YUETNHE3TATRGZOUYFCCH3PACYI63OFY.TDGCWZ6QWVMTJLJI4KVWZPHMWUWB7VGWNJ4YWBQ"/&gt;
+    &lt;parent rdf:resource="x-rdf-subject:urn:bitprint:D6JW7ZPUNUZ5D56YDCZYR5PDI2LKKKXW.OIQFQRV3CD7BLGT4CZ74CHQSNL6O3DNOIVL2GTY"/&gt;
+    &lt;dc:created&gt;2012-02-19 23:30:19 GMT&lt;/dc:created&gt;
+    &lt;dc:creator&gt;TOGoS&lt;/dc:creator&gt;
+    &lt;dc:description&gt;Merged changes from 2 other versions of my profile.&lt;/dc:description&gt;
+&lt;/Commit&gt;</code></pre></blockquote>
+
+<p class="todo">TODO: document ways to comment on other people's objects, rate posts, comments, and other 'social' interactions.</p>
 </section>
 
 
@@ -85,7 +108,7 @@ with data.  The simplest standard I've found for doing this over HTTP
 uses a 'Content-Signature' header, and is described
 at <a href="http://tools.ietf.org/html/draft-burke-content-signature-00">http://tools.ietf.org/html/draft-burke-content-signature-00</a>.</p>
   
-<p>DOGNDS may use a subset of this standard as follows:</p>
+<p>DOGNDS may use a subset of the content-signature functionality:</p>
 <ul>
 <li>Only the content will be signed</li>
 <li>Signer = URN of the signer's public key</li>
@@ -174,7 +197,7 @@ encoded in RDF+XML as:</p>
 <blockquote><pre><code>active:http://example.org/arithmetic/Add+term@data:,2+term@active%3Ahttp%3A%2F%2Fexample%2Eorg%2Farithmetic%2FMultiply%2Bfactor%40data:,3%2Bfactor%40data:,8</code></pre></blockquote>
   
 <p>Neither of which is especially friendly to human eyes or
-well-suited to effieciently encode simple arithmetic expressions, but
+well-suited to concisely encode simple arithmetic expressions, but
 they can be used as an interchange format when a functional program
 needs to be explicitly described.</p>
   
@@ -182,7 +205,7 @@ needs to be explicitly described.</p>
 <h4>Active URI syntax note</h4>
 <p>In the active: URI example above,
 expression attributes are assumed to inherit the namespace of the
-expression type name (the active: URI spec says that names may be
+expression type name (the Active URI spec says that names may be
 relative, but doesn't specify relative to <em>what</em>.  This seems a
 reasonable way to use relative URIs).</p>
 </aside>
@@ -262,10 +285,10 @@ and <code>x-rdf-subject:</code> prefix interchangeable.</p>
 <section>
 <h2 id="CoreFunctions">Core Functions</h2>
 
-<p>The namespace for all argument names / attributes of the following
-functions is <code>http://ns.nuke24.net/DOG/Func/</code>.  They are
-left off for brevity, and because my interpretation of the active URI
-scheme suggests that they can be left out of active URIs.</p>
+<p>The namespace for all argument names of the following functions
+is <code>http://ns.nuke24.net/DOG/Func/</code>.  They are left off for
+brevity, and because my interpretation of the active URI scheme
+suggests that they can be left out of active URIs.</p>
 
 <aside>
 <h4>On using nouns as function names</h4>
@@ -315,7 +338,7 @@ programs that work with these objects.</p>
 </ul>
 
 <ul class="functionNotes">
-<li>Equivalent to x-rdf-subject:&lt;target URI&gt;</li>
+<li>Equivalent to x-rdf-subject:&lt;document URI&gt;</li>
 <li>Returns some (hopefully useful) representation of the
   object described by the specified data.</li>
 </ul>
@@ -376,7 +399,7 @@ programs that work with these objects.</p>
 </dd>
 
   
-<dt>http://ns.nuke24.net/DOG/Func/LatestTaggedSignedCommit</dt>
+<dt>http://ns.nuke24.net/DOG/Func/LatestTaggedSignedSubject</dt>
 <dd>
 <ul class="functionArguments">
 <li>tag@&lt;commit must have this tag&gt;</li>
@@ -385,13 +408,13 @@ programs that work with these objects.</p>
 </ul>
 
 <ul class="functionNotes">
-<li>Returns the latest commit signed by at least requiredSignatureCount of the listed keys
+<li>Returns the latest object signed by at least requiredSignatureCount of the listed keys
   with the specified tag.</li>
 <li>Will result in a not found error if no commit is found.</li>
 <li>Providing multiple public keys and &gt; 1 requiredSignatureCount
-  is sort of an advanced feature.  I don't plan to support it, but the
-  idea could be useful in the future so I figured I'd specify how it
-  should work.</li>
+  is sort of an advanced feature.  I don't plan to support it at
+  first, but it's specified because the idea could be useful in the
+  future.</li>
 </ul>
 </dd>
 
