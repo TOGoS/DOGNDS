@@ -2,3 +2,13 @@ http://www.w3.org/wiki/Foaf%2Bssl
 - describes using SSL to authenticate people.  It seems a bit more complex
   than the DOGNDS method, relying on certificates and multiple other
   standards.
+
+http://www.w3.org/TR/cooluris/
+- Thoughts on how to identify objects that are not web pages using web
+  URIs, inc. the possibility of using fragment identifiers:
+  http://www.w3.org/TR/cooluris/#hashuri
+
+http://www.w3.org/TR/2000/CR-rdf-schema-20000327/#s2.3.4
+- About the rdfs:seeAlso attribute, which may be usful for linking
+  from simple RDF+XML profiles to larger structures that give
+  information about the same person.

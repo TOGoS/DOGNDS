@@ -228,23 +228,32 @@ can be used like so:</p>
 <p>When 'Bookcase' is used as part of an expression, it acts as a
 constructor for bookcase objects, and width and height will be
 evaluated as expressions.  Following is an expression that evaluates
-to a Bookcase object with twice the height of another bookcase.</p>
+to a Bookcase object with three times the height of another bookcase.</p>
 
 <blockquote><pre><code>&lt;Bookcase xmlns="http://ns.furniture.com/"&gt;
-    &lt;width xml:unit="inches"&gt;28&lt;/width&gt; &lt;!-- Literal? --&gt;
+    &lt;width xml:unit="inches"&gt;28&lt;/width&gt; &lt;!-- Literal typed value? --&gt;
     &lt;height&gt;
         &lt;Multiply xmlns="ns.example.org/arithmetic/"&gt;
             &lt;factor&gt;3&lt;/factor&gt;
-            &lt;Height&gt;
-                &lt;item&gt;
-                    &lt;Literal xmlns="http://ns.nuke24.net/NET/"&gt;
-                        &lt;value rdf:resource="x-rdf-subject:http://items.furniture.com/SmallBookcase.rdf"/&gt;
-                    &lt;/Literal&gt;
-                &lt;/item&gt;
-            &lt;/Height&gt;
+            &lt;factor&gt;
+                &lt;Height&gt;
+                    &lt;item&gt;
+                        &lt;Literal xmlns="http://ns.nuke24.net/NET/"&gt;
+                            &lt;value rdf:resource="x-rdf-subject:http://items.furniture.com/SmallBookcase.rdf"/&gt;
+                        &lt;/Literal&gt;
+                    &lt;/item&gt;
+                &lt;/Height&gt;
+            &lt;/factor&gt;
         &lt;/Multiply&gt;
     &lt;/height&gt;
 &lt;/Bookcase&gt;</code></pre></blockquote>
+
+<aside>
+<p>I thought I saw something like xml:unit being used in some example,
+but I've found no documentation about it and I was probably thinking
+of xml:lang.  I'm aware the xml:unit property mentioned above isn't
+officially defined.</p>
+</aside>
 
 <aside>  
 <h5>Note about function / literal / constructor ambiguity</h5>
@@ -272,10 +281,11 @@ bookcase in the above example referenced using a URL like...
 <code>http://items.furniture.com/Bookcases.rdf#SmallBookcase</code>,
 where <code>#SmallBookcase</code> means 'the thing described by the
 node labeled SmallBookcase in this file'.  That seems to be the
-convention for interpreting <code>#</code>s suggested by RDF
-documents, anyway.  Extrapolating, you might say that a <code>#</code>
-at the end of a URL means the thing described by the entire RDF
-document, making the <code>#</code> postfix
+convention for interpreting URI
+fragments <a href="http://www.w3.org/TR/cooluris/#hashuri">suggested
+by some W3C documents</a>, anyway.  Extrapolating, you might say that
+a <code>#</code> at the end of a URL means the thing described by the
+entire RDF document, making the <code>#</code> postfix
 and <code>x-rdf-subject:</code> prefix interchangeable.</p>
 </aside>
 </aside>
