@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="us-ascii"/>
+<title>DOGNDS Simple Web Server Requirements</title>
+</head>
+<body>
+
+<h1>DOGNDS Simple Web Server Requirements</h1>
+
+<h2>Level 1</h2>
+
+<p>Implements a read-only HTTP URN resolver.</p>
+
+<p>Must support the following types of requests:</p>
+
+<ul>
+<li><code>GET &lt;root&gt;N2R?&lt;URN&gt;</code></li>
+<li><code>GET &lt;root&gt;raw/&lt;escaped URN&gt;/&lt;filename&gt;</code></li>
+</ul>
+
+<p>Where <code>&lt;root&gt;</code> is an HTTP URL ending with
+a <code>/</code> and <code>&lt;URN&gt;</code> matches one of the following formats:</p>
+
+<ul>
+<li><code>urn:sha1:&lt;base32-encoded SHA-1 (32 chars)&gt;</code></li>
+<li><code>urn:bitprint:&lt;base32-encoded SHA-1 (32 chars)&gt;.&lt;base32-encoded TigerTree (40 chars)&gt;</code></li>
+</ul>
+
+<p><code>urn:sha1:</code> and <code>urn:bitprint:</code> are de-facto standard URN schemes.</p>
+
+<p>For the raw/ form, URNs should be escaped as URL components for use
+in the HTTP URL so that they are treated as a single argument/path
+segment by the web server.  i.e.</p>
+
+<p><code> full HTTP URL = root URL + "raw/" + urlencode(URN) +
+"/" + filename</code></p>
+
+<p>Special URL characters that do not have special meaning at their
+position in the HTTP URL, such as "<code>:</code>", should be left
+unescaped.</p>
+
+<p>Filenames are provided for convenience of users who are loading
+resources into a web browser and may be used to help determine returned
+content-type, but must not affect the actual content returned.</p>
+
+<p>The N2R style request may be used by clients that do not care about
+suggested names or formats and is based
+on <a href="http://www.ietf.org/rfc/rfc2169.txt">RFC 2169</a>.  In
+this form, the URN is the entire query string, and must not be
+escaped.  RFC 2169 also dictates the full path of the N2R resource to
+be <code>/uri-res/N2R</code>, but this specification allows any
+prefix.</p>
+
+<p>Resolver-based links from the web to should use
+the <code>raw/&lt;escaped URN&gt;/&lt;filename&gt;</code> form, and
+should make some effort to use a single canonical URL (to benefit
+caches).</p>
+
+</body>
+</html>
