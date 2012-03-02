@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="us-ascii"/>
+<title>DOGNDS Implementation Recommendations</title>
+</head>
+<body>
+
+<h1>DOGNDS Implementation Recommendations</h1>
+
+<p>Optional standards to follow for implementation details of various
+subsystems.</p>
+
+<h2>Simple Data Repository</h2>
+
+<p>Indexes data using the filesystem.</p>
+
+<ul>
+<li><code>.../data/&lt;sector&gt;/&lt;first 2 characters of base32-encoded SHA1&gt;/&lt;base32-encoded SHA1&gt;</code></li>
+</ul>
+
+<p>Where <code>&lt;sector&gt;</code> is a name (conventionally all
+lowercase with dashes to separate multiple words) indicating the role
+of the data stored there.  Many repositories will have only a single
+data sector, but this structure allows multiple sectors to ease
+management of data from different sources.</p>
+
+</body>
+</html>
