@@ -1,0 +1,66 @@
+#!/usr/bin/ruby
+
+require 'TOGoS/Base32'
+require 'DOGNDS/HTTP/SimpleHTTP1_0Client'
+
+require 'digest/sha1'
+
+module DOGNDS ; module ServerTest
+  class HTTPServiceTest
+    def http_client
+      @http_client ||= DOGNDS::HTTP::SimpleHTTP1_0Client.new
+    end
+    
+    def sha1_urn( data )
+      raise "Cannot hash non-string: #{data.class}" unless data.is_a? String
+      return "urn:sha1:"+TOGoS::Base32.encode32(Digest::SHA1.digest(data))
+    end
+    
+    def mkreq( verb, uri, headers={}, data=nil )
+      return DOGNDS::HTTP::HTTPRequest.new(verb, uri, headers, data)
+    end
+    
+    def assert_ok( res )
+      if res.status_code / 100 != 2
+        raise "Expected 200/OK response but got #{res.status_code}.  content:"+res.content
+      end
+    end  
+    def assert_equals( expected, actual )
+      if expected != actual
+        raise "Expected #{expected.inspect} but got #{actual.inspect}"
+      end
+    end
+  end
+  
+  class PutGetUnsignedBlobTest < HTTPServiceTest
+    def test( base_uri )
+      data = (0..128).map{rand(255).chr}.join
+      urn = sha1_urn( data )
+      
+      puts "Testing with #{urn}..."
+      
+      res = http_client.call( mkreq('GET',base_uri+'N2R?'+urn) )
+      assert_equals( 404, res.status_code )
+      
+      res = http_client.call( mkreq('PUT',base_uri+'N2R?'+urn,{},data) )
+      assert_ok( res )
+      
+      res = http_client.call( mkreq('GET',base_uri+'N2R?'+urn) )
+      assert_ok( res )
+      assert_equals( data, res.content )
+    end
+  end
+  
+  class PutBlocWithMismatchingURNTest < HTTPServiceTest
+    def run
+
+    end
+  end
+  
+end ; end
+
+DOGNDS::ServerTest::PutGetUnsignedBlobTest.new.test( 'http://www.nuke24.net/uri-res/' )
+
+#include DOGNDS::ServerTest
+#hc = HTTPClient.new
+#p hc.call( HTTPRequest.new('GET','http://www.nuke24.net/') )
