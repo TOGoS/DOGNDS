@@ -7,8 +7,11 @@ module DOGNDS ; module HTTP
       for (k,v) in headers
         k = k.downcase
         normalized_headers[k] ||= []
-        unless v.is_a? Array ; v = [v] ; end
-        for v in v ; normalized_headers << v ; end
+        if v.is_a? Array
+          for v in v ; normalized_headers[k] << v ; end
+        else
+          normalized_headers[k] << v
+        end
       end
       return normalized_headers
     end

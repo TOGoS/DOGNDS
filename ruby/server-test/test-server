@@ -20,15 +20,24 @@ module DOGNDS ; module ServerTest
       return DOGNDS::HTTP::HTTPRequest.new(verb, uri, headers, data)
     end
     
-    def assert_ok( res )
-      if res.status_code / 100 != 2
-        raise "Expected 200/OK response but got #{res.status_code}.  content:"+res.content
+    def assert_status( status, res )
+      unless status === res.status_code
+        raise "Expected #{status} response but got #{res.status_code}.\n"+res.content
       end
-    end  
+    end
+    
+    def assert_ok( res )
+      assert_status( 200..299, res )
+    end
+    
     def assert_equals( expected, actual )
       if expected != actual
         raise "Expected #{expected.inspect} but got #{actual.inspect}"
       end
+    end
+    
+    def to_s
+      return self.class.name
     end
   end
   
@@ -37,10 +46,8 @@ module DOGNDS ; module ServerTest
       data = (0..128).map{rand(255).chr}.join
       urn = sha1_urn( data )
       
-      puts "Testing with #{urn}..."
-      
       res = http_client.call( mkreq('GET',base_uri+'N2R?'+urn) )
-      assert_equals( 404, res.status_code )
+      assert_status( 404, res )
       
       res = http_client.call( mkreq('PUT',base_uri+'N2R?'+urn,{},data) )
       assert_ok( res )
@@ -51,16 +58,105 @@ module DOGNDS ; module ServerTest
     end
   end
   
-  class PutBlocWithMismatchingURNTest < HTTPServiceTest
-    def run
-
+  class PutBlobWithMismatchingURNTest < HTTPServiceTest
+    def test( base_uri )
+      data = (0..128).map{rand(255).chr}.join
+      urn = sha1_urn( data )
+      bad_urn = sha1_urn( data + 'xyz' )
+      
+      res = http_client.call( mkreq('GET',base_uri+'N2R?'+urn) )
+      assert_status( 404, res )
+      
+      res = http_client.call( mkreq('GET',base_uri+'N2R?'+bad_urn) )
+      assert_status( 404, res )
+      
+      res = http_client.call( mkreq('PUT',base_uri+'N2R?'+bad_urn,{},data) )
+      assert_status( 409, res )
+      
+      res = http_client.call( mkreq('GET',base_uri+'N2R?'+urn) )
+      assert_status( 404, res )
+      
+      res = http_client.call( mkreq('GET',base_uri+'N2R?'+bad_urn) )
+      assert_status( 404, res )
     end
   end
   
+  class GoodSignatureTest < HTTPServiceTest
+    def test( base_uri )
+      csigtest_uri = "http://www.nuke24.net/misc/csigtest"
+      data = (0..128).map{rand(255).chr}.join
+      
+      require 'base64'
+      require 'openssl'
+      require 'DOGNDS/Crypto/KeyUtil'
+      
+      key = OpenSSL::PKey::RSA.generate( 2048 )
+      digest = OpenSSL::Digest::SHA1.new
+      sig = key.sign( digest, data )
+      pubkey_data = DOGNDS::Crypto::KeyUtil.public_key_info( key ).to_der
+      pubkey_urn = sha1_urn( pubkey_data )
+      
+      csig = "signature=#{sig.unpack('H*')}; algorithm=SHA1withRSA; signer=#{pubkey_urn}"
+      
+      res = http_client.call( mkreq('PUT',base_uri+'N2R?'+pubkey_urn, {}, pubkey_data) )
+      assert_ok( res )
+      
+      res = http_client.call( mkreq('POST',csigtest_uri,{'content-signature'=>csig},data) )
+      assert_ok( res )
+    end
+  end
+  
+  class BadSignatureTest < HTTPServiceTest
+    def test( base_uri )
+      csigtest_uri = "http://www.nuke24.net/misc/csigtest"
+      data = (0..128).map{rand(255).chr}.join
+      
+      require 'base64'
+      require 'openssl'
+      require 'DOGNDS/Crypto/KeyUtil'
+      
+      key = OpenSSL::PKey::RSA.generate( 2048 )
+      digest = OpenSSL::Digest::SHA1.new
+      sig = key.sign( digest, data+'x' )
+      pubkey_data = DOGNDS::Crypto::KeyUtil.public_key_info( key ).to_der
+      pubkey_urn = sha1_urn( pubkey_data )
+      
+      csig = "signature=#{sig.unpack('H*')}; algorithm=SHA1withRSA; signer=#{pubkey_urn}"
+      
+      res = http_client.call( mkreq('PUT',base_uri+'N2R?'+pubkey_urn, {}, pubkey_data) )
+      assert_ok( res )
+      
+      res = http_client.call( mkreq('POST',csigtest_uri,{'content-signature'=>csig},data) )
+      assert_status( 400..499, res )
+    end
+  end
+  
+  class TestRunner
+    def test( base_uri )
+      tests = []
+      tests << PutGetUnsignedBlobTest.new
+      tests << PutBlobWithMismatchingURNTest.new
+      #tests << GoodSignatureTest.new
+      #tests << BadSignatureTest.new
+      
+      failures = 0
+      
+      for t in tests
+        begin
+          t.test( base_uri )
+        rescue => e
+          STDERR.puts "Failed: #{t}"
+          STDERR.puts e.message
+          for b in e.backtrace
+            STDERR.puts "  " + b
+          end
+          failures += 1
+        end
+      end
+      
+      return failures
+    end
+  end
 end ; end
 
-DOGNDS::ServerTest::PutGetUnsignedBlobTest.new.test( 'http://www.nuke24.net/uri-res/' )
-
-#include DOGNDS::ServerTest
-#hc = HTTPClient.new
-#p hc.call( HTTPRequest.new('GET','http://www.nuke24.net/') )
+exit DOGNDS::ServerTest::TestRunner.new.test( 'http://www.nuke24.net/uri-res/' )
