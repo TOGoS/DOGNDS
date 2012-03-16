@@ -1,0 +1,22 @@
+<Person
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns="http://xmlns.com/foaf/0.1/"
+	xmlns:admin="http://webns.net/mvcb/"
+>
+	<name>Dan Stevens</name>
+	<givenname>Dan</givenname>
+	<family_name>Stevens</family_name>
+	<nick>TOGoS</nick>
+	<mbox_sha1sum>4984ba755d9d950bdb35f856aa2b192f53e60ac4</mbox_sha1sum>
+	<homepage rdf:resource="http://www.nuke24.net/"/>
+	<depiction rdf:resource="http://www.earthit.com/media/k2/users/8.jpg"/>
+	<workplaceHomepage rdf:resource="http://www.earthit.com/"/>
+	
+	<account>
+		<OnlineAccount>
+			<accountServiceHomepage rdf:resource="http://www.facebook.com/"/>
+			<accountName>TOGoS</accountName>
+		</OnlineAccount>
+	</account>
+</Person>

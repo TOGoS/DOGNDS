@@ -7,10 +7,12 @@
   their source (though we can't enforce this in the data).
 * When the things being shared are defined by RDF describing them, that RDF can also provide metadata.
 
-<Commit xmlns="http://ns.nuke24.net/ContentCouch">
-	<tag>profile</tag>
-	<parent rdf:resource="x-rdf-subject:urn:bitprint:......."/> <!-- Reference to previous commit -->
-	<target rdf:resource="x-rdf-subject:urn:bitprint:......."/> <!-- Reference to person object -->
-</Commit>
+	<Commit xmlns="http://ns.nuke24.net/ContentCouch/">
+		<tag>profile</tag>
+		<parent rdf:resource="x-rdf-subject:urn:bitprint:......."/> <!-- Reference to previous commit -->
+		<target rdf:resource="x-rdf-subject:urn:bitprint:......."/> <!-- Reference to person object -->
+	</Commit>
 
-<Person
+Since a person's information and shared items could possibly comprise an enormous amount of data, only a subset that can be encoded into a few kilobytes should be used as their primary 'profile document'.  This document can contain <http://www.w3.org/2000/01/rdf-schema#seeAlso> properties that link to larger collections.  Based on my interpretation of this property (as edefined at http://www.w3.org/TR/2000/CR-rdf-schema-20000327/#s2.3.4), it should link to a documennt that gives more information about this person, rather than to an object directly representing this same person (this also makes more sense intuitively.  Linking to a document is like saying 'read about me here'; the alternative would be like pointing to another person and saying 'this is also me').
+
+<Person> objects will be able to indicate 'shared' items via share and shareTree predicates (shareTree points to a tree structure containing many shared items and sub-trees).  The target of an individual share should be specified using an x-rdf-subject:urn:sha1:....  To comment, others can tag their comment objects with tag=response-to:x-rdf-subject:urn:sha1:ORIGINALSHAREDITEM.

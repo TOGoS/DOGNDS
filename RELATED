@@ -12,3 +12,8 @@ http://www.w3.org/TR/2000/CR-rdf-schema-20000327/#s2.3.4
 - About the rdfs:seeAlso attribute, which may be usful for linking
   from simple RDF+XML profiles to larger structures that give
   information about the same person.
+
+http://www.ietf.org/rfc/rfc2169.txt
+
+http://www.psg.com/lists/cdn/cdn.2001/msg00540.html
+- Justin Chapweske talking about applications of RFC 2169

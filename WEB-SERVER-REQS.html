@@ -57,5 +57,19 @@ the <code>raw/&lt;escaped URN&gt;/&lt;filename&gt;</code> form, and
 should make some effort to use a single canonical URL (to benefit
 caches).</p>
 
+<h2>Indexes</h2>
+
+<p>Things that every server should index:</p>
+
+<ul>
+<li>The resource with a given SHA-1 sum</li>
+<li>all siginfo+commits with a given tag</li>
+<li>all siginfo+commits signed by a given publicKey</li>
+<li>all siginfo+commits with a given tag and signed by a given publicKey</li>
+<li>the latest siginfo+commit with a given tag and given publicKey</li>
+</ul>
+
+<p>(siginfo+commit indicates a combination SignatureInfo and its signed data)</p>
+
 </body>
 </html>

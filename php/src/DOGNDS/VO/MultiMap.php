@@ -5,7 +5,7 @@ namespace DOGNDS\VO;
 use ArrayAccess;
 use Exception;
 
-class MultiMap implements ArrayAccess
+class MultiMap implements DOGNDS\MultiMap
 {
 	public static function from( $from ) {
 		if( $from instanceof MultiMap ) return $from;
@@ -47,7 +47,7 @@ class MultiMap implements ArrayAccess
 	 * @param string $k attribute name
 	 * @param mixed $v an array of values OR an object that somehow represents the set of all values
 	 */
-	public function putAll( $k, $v ) {
+	public function setAll( $k, $v ) {
 		$this->data[$k] = $v;
 	}
 	
