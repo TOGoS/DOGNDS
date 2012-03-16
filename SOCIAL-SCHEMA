@@ -16,3 +16,42 @@
 Since a person's information and shared items could possibly comprise an enormous amount of data, only a subset that can be encoded into a few kilobytes should be used as their primary 'profile document'.  This document can contain <http://www.w3.org/2000/01/rdf-schema#seeAlso> properties that link to larger collections.  Based on my interpretation of this property (as edefined at http://www.w3.org/TR/2000/CR-rdf-schema-20000327/#s2.3.4), it should link to a documennt that gives more information about this person, rather than to an object directly representing this same person (this also makes more sense intuitively.  Linking to a document is like saying 'read about me here'; the alternative would be like pointing to another person and saying 'this is also me').
 
 <Person> objects will be able to indicate 'shared' items via share and shareTree predicates (shareTree points to a tree structure containing many shared items and sub-trees).  The target of an individual share should be specified using an x-rdf-subject:urn:sha1:....  To comment, others can tag their comment objects with tag=response-to:x-rdf-subject:urn:sha1:ORIGINALSHAREDITEM.
+
+<Person>
+  <forum>
+    <Forum>
+      <threads> <!-- References a collection of threads; actually this will be by rdf:resource="x-rdf-subject:urn:bitprint:..." -->
+        <Tree>
+          <leaf>
+            <Thread>
+              <dc:created>2012-01-24</dc:created>
+              <postRule>
+                ... some object that describes restrictions on posted comments
+                    that should be applied by clients who retrieve them from the
+                    nework.  These restrictions would not need to apply to comments
+                    
+              </postRule>
+              <topic rdf:resource="x-rdf-subject:urn:bitprint:BLAH.BLAH"/>
+              <!-- Comments can be submitted by tagging objects as 'response-to:<topic URN>' -->
+              <comments>
+                <Tree>
+                  <leaf>
+                    <SignedSubject>
+                      <signedData rdf:resource="urn:sha1:..."/>
+                      <signatureAlgorithm>sha1WithRSAEncryption</signatureAlgorithm>
+                      <publicKey rdf:resource="urn:sha1:..."/>
+                      <signatureBase64>ASD123xyz</signatureBase64>
+                    </SignedSubject>
+                  </leaf>
+                </Tree>
+              </comments>
+            </Thread>
+          </leaf>
+          <leaf>...</leaf>
+          <branch rdf:resource="x-rdf-subject:..." /> <!-- Subtree -->
+        </Tree>
+      </threads>
+    </Forum>
+  </forum>
+<Thread>
+</Thread>
