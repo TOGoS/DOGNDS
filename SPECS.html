@@ -324,7 +324,7 @@ programs that work with these objects.</p>
 </ul>
 </dd>
 
-<dt>http://ns.nuke24.net/DOG/Func/SignatureInfo</dt>
+<!-- dt>http://ns.nuke24.net/DOG/Func/SignatureInfo</dt>
 <dd>
 <ul class="functionArguments">
 <li>target@&lt;data to be signed&gt;</li>
@@ -339,7 +339,7 @@ programs that work with these objects.</p>
   about the signing of some data.</li>
 <li>There may be multiple publicKeys and signatures.</li>
 </ul>
-</dd>
+</dd -->
 
 <dt>http://ns.nuke24.net/DOG/Func/RDFSubject</dt>
 <dd>
@@ -409,7 +409,7 @@ programs that work with these objects.</p>
 </dd>
 
   
-<dt>http://ns.nuke24.net/DOG/Func/LatestTaggedSignedSubject</dt>
+<!-- dt>http://ns.nuke24.net/DOG/Func/LatestTaggedSignedSubject</dt>
 <dd>
 <ul class="functionArguments">
 <li>tag@&lt;commit must have this tag&gt;</li>
@@ -426,10 +426,10 @@ programs that work with these objects.</p>
   first, but it's specified because the idea could be useful in the
   future.</li>
 </ul>
-</dd>
+</dd -->
 
 
-<dt>http://ns.nuke24.net/DOG/Func/SignedData</dt>
+<!-- dt>http://ns.nuke24.net/DOG/Func/SignedData</dt>
 <dd>
 <ul class="functionArguments">
 <li>signatureInfo@&lt;signature info structure&gt;</li>
@@ -437,11 +437,27 @@ programs that work with these objects.</p>
 <li>requiredSignatureCount@&lt;require signatures by this many keys, default = 1&gt;</li>
 </ul>
     
-<ul class="functionNotes">
+<ul class="functionNotes">.
 <li>Will return the signed data or result in a security error if
   signatures could not be verified.</li>
 </ul>
+</dd -->
+
+<dt>http://ns.nuke24.net/DOG/Func/FindSignedData</dt>
+<dd>
+<ul class="functionArguments">
+<li>tag@&lt;require returned data to contain this tag&gt;</li>
+<li>publicKey@&lt;require returned data to be signed by this key&gt;</li>
+<li>limit@&lt;try to find up to this many records&gt;</li>
+</ul>
+
+<ul class="functionNotes">
+<li>Result is a multipart message, where each part has a Content-Signature header
+  (see <a href="http://www.ietf.org/rfc/rfc1341.txt">RFC 1341</a> for details on
+  multipart messages).</li>
+</ul>
 </dd>
+
 </dl>
 
 <aside>
