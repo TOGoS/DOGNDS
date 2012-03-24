@@ -14,3 +14,5 @@ e.g.
            active: URNs to query based on this.
 
 Could use 1.01, etc. as labels for updated level specs.
+
+Look into feasability of making signatures and encryption PGP-compatible.

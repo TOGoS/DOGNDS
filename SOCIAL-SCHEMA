@@ -13,6 +13,73 @@
 		<target rdf:resource="x-rdf-subject:urn:bitprint:......."/> <!-- Reference to person object -->
 	</Commit>
 
-Since a person's information and shared items could possibly comprise an enormous amount of data, only a subset that can be encoded into a few kilobytes should be used as their primary 'profile document'.  This document can contain <http://www.w3.org/2000/01/rdf-schema#seeAlso> properties that link to larger collections.  Based on my interpretation of this property (as edefined at http://www.w3.org/TR/2000/CR-rdf-schema-20000327/#s2.3.4), it should link to a documennt that gives more information about this person, rather than to an object directly representing this same person (this also makes more sense intuitively.  Linking to a document is like saying 'read about me here'; the alternative would be like pointing to another person and saying 'this is also me').
+Since a person's information and shared items could possibly comprise
+an enormous amount of data, only a subset that can be encoded into a
+few kilobytes should be used as their primary 'profile document'.
+This document can contain
+<http://www.w3.org/2000/01/rdf-schema#seeAlso> properties that link to
+larger collections.  Based on my interpretation of this property (as
+edefined at http://www.w3.org/TR/2000/CR-rdf-schema-20000327/#s2.3.4),
+it should link to a documennt that gives more information about this
+person, rather than to an object directly representing this same
+person (this also makes more sense intuitively.  Linking to a document
+is like saying 'read about me here'; the alternative would be like
+pointing to another person and saying 'this is also me').
 
-<Person> objects will be able to indicate 'shared' items via share and shareTree predicates (shareTree points to a tree structure containing many shared items and sub-trees).  The target of an individual share should be specified using an x-rdf-subject:urn:sha1:....  To comment, others can tag their comment objects with tag=response-to:x-rdf-subject:urn:sha1:ORIGINALSHAREDITEM.
+
+
+Forum system
+
+
+DiscussionThread
+  postSignatureInfo: SignatureInfo (referenced by URN)
+    signedData: (serialized <Post> object)
+  subThread: DiscussionThread
+    postSignatureInfo: SignatureInfo of reply (referenced by URN)
+    subThread for each reply-to-the-reply
+  etc  
+
+Clients can look up comments by tag=response-to:<original post's
+SignatureInfo URN>.  Posts should also be able to indicate how clients
+should filter comments.  SubThreads can be explicitly added to the
+thread by the forum's moderator, which creates a stronger link to
+specific comments.  The DiscussionThread structure is only necessary
+to contain the moderated discussion structure.  Without it, clients
+can look up comments via indexes and do whatever filtering they want
+(including using any filters recommended by the parent post.)
+
+
+
+
+http://ns.nuke24.net/DOGNDS/DiscussionThread
+  1 postSignatureInfo: SignatureInfo[Post]
+  * subThread: DiscussionThread
+  * subThreads: Collection[DiscussionThread]
+
+http://ns.nuke24.net/DOGNDS/SignatureInfo
+  1 signedData: blob
+  1 signature: blob
+  1 signatureAlgorithm: string naming algorithm
+  1 publicKey: blob
+
+http://ns.nuke24.net/DOGNDS/Post
+  * subject: reference to object being shared
+  * comment: some text about it
+  * tag = "reply-to:<URI of parent thread's post signature info>", if this is a reply to another thread
+  * responseFilter
+
+Posts do not reference their author directly.
+Instead, SignatureInfo objects link a blob of data with the public key that signed it.
+The author's information can be looked up via their public key.
+
+High-level conceptual PostSignatureInfo object
+  stored fields:
+    1 signedData: blob
+    1 signature: blob
+    1 signatureAlgorithm: string naming algorithm
+    1 publicKey: blob
+
+  regenerated fields:
+    1 post: RDF-subject of signed data
+    1 verified: whether or not the post's signature has been validated
+    1 author: the Person who made this post (based on publicKey)
